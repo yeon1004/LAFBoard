@@ -1,0 +1,60 @@
+grant connect, resource to orauser;
+
+create table users(
+userid varchar2(50) primary key,
+userpw varchar2(50) not null,
+uname varchar2(50) not null,
+uphone varchar2(13) not null,
+uemail varchar2(50) not null
+);
+
+create table board(
+bid int primary key,
+btitle varchar(200) not null,
+bcont varchar(2000) not null,
+bwriter references users(userid),
+bdate varchar2(19) default to_char(sysdate, 'YYYY/MM/DD hh:mm:ss') not null,
+bhits int default 0,
+bfile1 varchar2(10) default '파일없음',
+bfile2 varchar2(10) default '파일없음',
+bfile3 varchar2(10) default '파일없음',
+bquiz varchar2(100) not null,
+banswer1 varchar2(50),
+banswer2 varchar2(50),
+banswer3 varchar2(50)
+);
+
+create table comments(
+cid int primary key,
+cparent references board(bid) not null,
+cwriter references users(userid) not null,
+ccont varchar2(200) not null,
+cdate varchar2(19) default to_char(sysdate, 'YYYY/MM/DD hh:mm:ss') not null,
+csecret int default 0 check(csecret in (1, 0))
+);
+
+create table questions(
+qid int primary key,
+qperent references board(bid) not null,
+qcont varchar2(100) not null,
+qanswer1 varchar(20) default null,
+qanswer2 varchar(20) default null,
+qanswer3 varchar(20) default null,
+qanswer4 varchar(20) default null,
+qanswer5 varchar(20) default null
+);
+
+create sequence seq_bid start with 1 increment by 1 minvalue 1 maxvalue 99999;
+drop sequence seq_bid;
+create sequence seq_cid start with 1 increment by 1 minvalue 1 maxvalue 99999;
+drop sequence seq_cid;
+create sequence seq_qid start with 1 increment by 1 minvalue 1 maxvalue 99999;
+drop sequence seq_qid;
+
+insert into users(userid, userpw, uname, uphone, uemail)
+values ('iny1004', 'dlskdus1', '이나연', '010-5447-7464', 'iiny1004@naver.com');
+
+insert into board(bid, btitle, bcont, bwriter) 
+values(seq_bid.nextval, '제목', '내용', 'iny1004');
+
+select * from board;
